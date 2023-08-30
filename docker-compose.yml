@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+    mosquitto:
+        image: eclipse-mosquitto:2
+        ports:
+            - 1884:1884
+            - 8883:8883
+            - 9009:9009
+        volumes:
+            - C:\mosquitto\config:/mosquitto/config
+            - C:\mosquitto\data:/mosquitto/data
+        networks:
+            - mosquitto
+
+    linha_producao_container:
+        build:
+            context: C:\mosquitto\linha_producao
+            dockerfile: Dockerfile
+        networks:
+            - mosquitto
+
+    fabrica_container:
+        build:
+            context: C:\mosquitto\fabrica
+            dockerfile: Dockerfile
+        networks:
+            - mosquitto
+
+    fornecedor_container:
+        build:
+            context: C:\mosquitto\fornecedor
+            dockerfile: Dockerfile_fornecedor
+        networks:
+            - mosquitto
+
+    almoxarifado_container:
+        build:
+            context: C:\mosquitto\Almoxarifado
+            dockerfile: Dockerfile
+        networks:
+            - mosquitto
+
+    produto_container:
+        build:
+            context: C:\mosquitto\produto
+            dockerfile: Dockerfile
+        networks:
+            - mosquitto
+
+networks:
+    mosquitto:
+        name: mosquitto
+        driver: bridge
+
+
+
+
