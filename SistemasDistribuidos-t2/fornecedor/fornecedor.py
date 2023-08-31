@@ -7,6 +7,7 @@ def on_connect(client, userdata, flags, return_code):
     if return_code == 0:
         print("Conectado")
         client.subscribe("almoxarifado")
+        client.subscribe("fornecedor")
     else:
         print("Não foi possível conectar, código de retorno:", return_code)
 

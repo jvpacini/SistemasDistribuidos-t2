@@ -54,7 +54,7 @@ buffer_estoque = BufferEstoqueProdutos(capacidade_maxima=100)
 def on_connect(client, userdata, flags, return_code):
     if return_code == 0:
         print("Conectado")
-        client.subscribe("linha")
+        client.subscribe("estoque")
     else:
         print("Não foi possível conectar, código de retorno:", return_code)
 
@@ -62,7 +62,7 @@ def on_message(client, userdata, message):
     msg = str(message.payload.decode("utf-8"))
     print("Mensagem recebida:", msg)
     comando = msg.split("/")
-    if comando[0] == "linha":
+    if comando[0] == "estoque":
         produto = int(comando[1])
         receberProduto(produto)
 
