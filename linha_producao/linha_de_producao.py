@@ -1,10 +1,7 @@
 import paho.mqtt.client as mqtt
 import time
 
-npecas = 10
-produto1 = [0, 1, 2, 3, 4, 5, 8, 9]
-pecasNaLinha = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-nlinha = int(input("Digite o número da linha: "))  # Converte a entrada para inteiro
+nlinha = int(input("Digite o número da linha: ")) 
 
 def on_connect(client, return_code):
     if return_code == 0:
@@ -17,34 +14,19 @@ def on_message(message):
     msg = str(message.payload.decode("utf-8"))
     print("Mensagem recebida:", msg)
     comando = msg.split("/")
-    if comando[0] == "fabrica" and comando[1] == str(nlinha):
-        pecas = comando[2].split(",")
-        for i in range(len(pecas)):
-            peca = int(pecas[i])
-            pecasNaLinha[peca] += 1
+    if comando[0] == "linha":
+        pedido = comando[3].split(",")
+        montarproduto(comando[2], pedido[0], pedido[1])
 
 def pedirpecas(pecas):
     pedido = ",".join(map(str, pecas))  # Use join para criar o pedido
-    result = client.publish("fabrica", f"linha/{nlinha}/{pedido}")
+    client.publish("fabrica", f"linha/{nlinha}/{pedido}")
 
-def montarproduto(produto):
-    contador = 0
-    pecas_faltantes = []
-    pecas_consumidas = []
-    if produto == 1:
-        for peca in produto1:
-            if pecasNaLinha[peca] > 0:
-                pecas_consumidas.append(peca)
-            else:
-                contador += 1
-                pecas_faltantes.append(peca)
-    if contador == 0:
-        for i in range(len(pecas_consumidas)):
-            pecasNaLinha[pecas_consumidas[i]] -= 1
-        return True
-    else:
-        pedirpecas(pecas_faltantes)
-        return False
+def montarproduto(nversao, npecas, inicio):
+    for i in range(inicio, inicio+npecas):
+        client.publish("linha", f"pedido/{i}")
+    client.publish("linha", f"produto/{nversao}")
+    
 
 def montarpedido(pedido):
     return montarproduto(pedido)

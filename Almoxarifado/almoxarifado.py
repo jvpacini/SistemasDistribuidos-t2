@@ -55,6 +55,7 @@ def on_connect(client, userdata, flags, return_code):
     if return_code == 0:
         print("Conectado")
         client.subscribe("fabrica")
+        client.subscribe("fornecedor")
     else:
         print("Não foi possível conectar, código de retorno:", return_code)
 
@@ -65,10 +66,12 @@ def on_message(client, userdata, message):
     if comando[0] == "fabrica":
         pecasUtilizadas = comando[2].split(",")
         for peca in pecasUtilizadas:
-            buffer_estoque.check_out(1, "Parte_" + peca)
+            buffer_estoque.check_out(15, "Parte_" + peca)
+            client.publish("fabrica", f"reabastecer/{nalmoxarifado}/{peca}")
     elif comando[0] == "fornecedor":
         peca = comando[2].split(",")
-        buffer_estoque.check_out(buffer_estoque.obter_valor_atual("Parte_" + peca), "Parte_" + peca)
+        for peca in pecasUtilizadas:
+            buffer_estoque.check_in(buffer_estoque.obter_valor_atual("Parte_" + peca), "Parte_" + peca)
 
 def atualizarEstoque(quantidade, peca):
     buffer_estoque.check_out(quantidade, "Parte_" + peca)
