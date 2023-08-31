@@ -1,8 +1,10 @@
 import paho.mqtt.client as mqtt
 import time
 
-pecasNaFabrica = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+pecasNaFabrica = []
 nfab = int(input("Digite o número da fábrica: "))
+for i in range(0, 100):
+    pecasNaFabrica[i] = 20
 
 def on_connect(client, return_code):
     if return_code == 0:

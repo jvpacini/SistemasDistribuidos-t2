@@ -1,7 +1,6 @@
 import paho.mqtt.client as mqtt
 import time
 
-estoqueFornecedores = [100, 100, 100, 100, 100]  # Estoque inicial de peças nos fornecedores
 nfornecedor = int(input("Digite o número do fornecedor: "))
 
 def on_connect(client, userdata, flags, return_code):
@@ -20,11 +19,7 @@ def on_message(client, userdata, message):
         fornecerPeca(peca)
 
 def fornecerPeca(peca):
-    if estoqueFornecedores[peca - 1] > 0:  # Verifica se há estoque disponível
-        estoqueFornecedores[peca - 1] -= 1
-        enviarPecaAoAlmoxarifado(peca)
-    else:
-        print("Fornecedor sem estoque da peça:", peca)
+    enviarPecaAoAlmoxarifado(peca)
 
 def enviarPecaAoAlmoxarifado(peca):
     client.publish("almoxarifado", f"reabastecido/{nfornecedor}/{peca}")
